@@ -14,7 +14,7 @@ type Image = {
   Image: string;
 };
 
-type Product = {
+export type Product = {
   Id: number;
   Name: string;
   Description: string;
@@ -40,9 +40,13 @@ export type ShoppingCartStore = {
   getHeader: () => void;
   getProducts: () => void;
   getBasketSummary: () => void;
+  setQuantityInc: (id: number) => void;
+  setQuantityDec: (id: number) => void;
+  deleteProduct: (id: number) => void;
+  deleteProducts: () => void;
 };
 
-const useShoppingCartStore = create<ShoppingCartStore>((set) => ({
+const useShoppingCartStore = create<ShoppingCartStore>((set, get) => ({
   header: null,
   products: null,
   basketSummary: null,
@@ -52,16 +56,69 @@ const useShoppingCartStore = create<ShoppingCartStore>((set) => ({
     set({ header: await response.json() });
   },
   getProducts: async () => {
-    const response = await fetch(`${baseURL}/products`);
-    const products = await response.json();
-    set({
-      products,
-      currency: products[0].Сurrency,
-    });
+    try {
+      const response = await fetch(`${baseURL}/products`);
+      const products = await response.json();
+      set({
+        products,
+        currency: products[0].Сurrency,
+      });
+    } catch (e) {
+      set({
+        products: [],
+      });
+    }
   },
   getBasketSummary: async () => {
     const response = await fetch(`${baseURL}/baskedsummary`);
     set({ basketSummary: await response.json() });
+  },
+  setQuantityInc: async (id: number) => {
+    await fetch(`${baseURL}/quantityinc`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'text/plain',
+      },
+      body: JSON.stringify({ ProductId: id, UserGuid: get().header?.UsedGuid }),
+    });
+    get().getProducts();
+    get().getBasketSummary();
+  },
+  setQuantityDec: async (id: number) => {
+    const response = await fetch(`${baseURL}/quantitydec`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'text/plain',
+      },
+      body: JSON.stringify({ ProductId: id, UserGuid: get().header?.UsedGuid }),
+    });
+
+    const { Name } = await response.json();
+    if (Name === 'Bad') return get().deleteProduct(id);
+
+    get().getProducts();
+    get().getBasketSummary();
+  },
+  deleteProduct: async (id: number) => {
+    await fetch(`${baseURL}/product`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'text/plain',
+      },
+      body: JSON.stringify({ ProductId: id, UserGuid: get().header?.UsedGuid }),
+    });
+    get().getProducts();
+    get().getBasketSummary();
+  },
+  deleteProducts: async () => {
+    await fetch(`${baseURL}/products`, {
+      method: 'DELETE',
+    });
+    get().getProducts();
+    get().getBasketSummary();
   },
 }));
 
