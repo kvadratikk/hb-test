@@ -1,0 +1,13 @@
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.navLink {
+  transition: all 0.3s;
+
+  &:hover {
+    color: var(--inverted-secondary-color);
+  }
+}

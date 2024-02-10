@@ -1,0 +1,14 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 10px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 30%);
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+}

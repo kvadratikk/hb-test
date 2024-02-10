@@ -1,6 +1,9 @@
+import Button from '@mui/material/Button';
 import { useEffect } from 'react';
 import useShoppingCartStore from '../../entities/ShoppingCart/ShoppingCart';
 import CartProduct from './Product/Product';
+
+import styles from './ShoppingCartPage.module.scss';
 
 const ShoppingCartPage = () => {
   const products = useShoppingCartStore(({ products }) => products);
@@ -18,32 +21,28 @@ const ShoppingCartPage = () => {
   }, [products, getProducts]);
 
   return (
-    <section>
-      <button onClick={deleteProducts}>Очистить корзину</button>
+    <section className={styles.page}>
+      <Button variant='outlined' onClick={deleteProducts}>
+        Очистить корзину
+      </Button>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Количество</th>
-            <th>Название</th>
-            <th>Стоимость единицы товара</th>
-            <th>Фото</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products?.map((product) => (
-            <CartProduct product={product} key={product.Id} />
-          ))}
-        </tbody>
-      </table>
-
-      <div>Количество товаров: {TotalProducts}</div>
-      <div>
-        Общая стоимость корзины: {Total}
-        {currency}
+      <div className={styles.products}>
+        {products?.map((product) => (
+          <CartProduct product={product} key={product.Id} />
+        ))}
       </div>
-      <div>Персональная скидка: {Discount}</div>
-      <button type='submit'>Оформить заказ</button>
+
+      <div>
+        <div>Количество товаров: {TotalProducts}</div>
+        <div>
+          Общая стоимость корзины: {Total}
+          {currency}
+        </div>
+        <div>Персональная скидка: {Discount}</div>
+        <Button variant='outlined' type='submit'>
+          Оформить заказ
+        </Button>
+      </div>
     </section>
   );
 };
