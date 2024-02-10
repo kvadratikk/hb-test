@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { Product } from '../../shared/types/Product';
 
 const baseURL = 'http://localhost:8080/api/ShoppingCart';
 
@@ -6,24 +7,6 @@ type Header = {
   LogoImg: string;
   UsedGuid: string;
   UserName: string;
-};
-
-type Image = {
-  FileName: string;
-  FileExtension: string;
-  Image: string;
-};
-
-export type Product = {
-  Id: number;
-  Name: string;
-  Description: string;
-  Quantity: number;
-  Unit: string;
-  Сurrency: string;
-  Price: number;
-  DiscountedPrice: number;
-  Images: Image[];
 };
 
 type BasketSummary = {
@@ -55,6 +38,10 @@ const useShoppingCartStore = create<ShoppingCartStore>((set, get) => ({
     const response = await fetch(`${baseURL}/header`);
     set({ header: await response.json() });
   },
+  getBasketSummary: async () => {
+    const response = await fetch(`${baseURL}/baskedsummary`);
+    set({ basketSummary: await response.json() });
+  },
   getProducts: async () => {
     try {
       const response = await fetch(`${baseURL}/products`);
@@ -68,10 +55,7 @@ const useShoppingCartStore = create<ShoppingCartStore>((set, get) => ({
         products: [],
       });
     }
-  },
-  getBasketSummary: async () => {
-    const response = await fetch(`${baseURL}/baskedsummary`);
-    set({ basketSummary: await response.json() });
+    get().getBasketSummary();
   },
   setQuantityInc: async (id: number) => {
     await fetch(`${baseURL}/quantityinc`, {
@@ -83,7 +67,6 @@ const useShoppingCartStore = create<ShoppingCartStore>((set, get) => ({
       body: JSON.stringify({ ProductId: id, UserGuid: get().header?.UsedGuid }),
     });
     get().getProducts();
-    get().getBasketSummary();
   },
   setQuantityDec: async (id: number) => {
     const response = await fetch(`${baseURL}/quantitydec`, {
@@ -99,7 +82,6 @@ const useShoppingCartStore = create<ShoppingCartStore>((set, get) => ({
     if (Name === 'Bad') return get().deleteProduct(id);
 
     get().getProducts();
-    get().getBasketSummary();
   },
   deleteProduct: async (id: number) => {
     await fetch(`${baseURL}/product`, {
@@ -111,14 +93,12 @@ const useShoppingCartStore = create<ShoppingCartStore>((set, get) => ({
       body: JSON.stringify({ ProductId: id, UserGuid: get().header?.UsedGuid }),
     });
     get().getProducts();
-    get().getBasketSummary();
   },
   deleteProducts: async () => {
     await fetch(`${baseURL}/products`, {
       method: 'DELETE',
     });
     get().getProducts();
-    get().getBasketSummary();
   },
 }));
 

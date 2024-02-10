@@ -1,24 +1,21 @@
 import { useEffect } from 'react';
-import useShoppingCartStore, { ShoppingCartStore } from '../../entities/ShoppingCart/ShoppingCart';
+import useShoppingCartStore from '../../entities/ShoppingCart/ShoppingCart';
 import CartProduct from './Product/Product';
 
 const ShoppingCartPage = () => {
-  const products = useShoppingCartStore((state: ShoppingCartStore) => state.products);
-  const currency = useShoppingCartStore((state: ShoppingCartStore) => state.currency);
-  const basketSummary = useShoppingCartStore((state: ShoppingCartStore) => state.basketSummary);
+  const products = useShoppingCartStore(({ products }) => products);
+  const currency = useShoppingCartStore(({ currency }) => currency);
+  const { TotalProducts, Total, Discount } =
+    useShoppingCartStore(({ basketSummary }) => basketSummary) || {};
 
-  const getProducts = useShoppingCartStore((state: ShoppingCartStore) => state.getProducts);
-  const getBasketSummary = useShoppingCartStore(
-    (state: ShoppingCartStore) => state.getBasketSummary,
-  );
-  const deleteProducts = useShoppingCartStore((state: ShoppingCartStore) => state.deleteProducts);
+  const getProducts = useShoppingCartStore(({ getProducts }) => getProducts);
+  const deleteProducts = useShoppingCartStore(({ deleteProducts }) => deleteProducts);
 
   useEffect(() => {
     if (!products) {
       getProducts();
-      getBasketSummary();
     }
-  }, [products, getProducts, getBasketSummary]);
+  }, [products, getProducts]);
 
   return (
     <section>
@@ -29,7 +26,7 @@ const ShoppingCartPage = () => {
           <tr>
             <th>Количество</th>
             <th>Название</th>
-            <th>Стоимость</th>
+            <th>Стоимость единицы товара</th>
             <th>Фото</th>
           </tr>
         </thead>
@@ -40,12 +37,12 @@ const ShoppingCartPage = () => {
         </tbody>
       </table>
 
-      <div>Количество товаров: {basketSummary?.TotalProducts}</div>
+      <div>Количество товаров: {TotalProducts}</div>
       <div>
-        Общая стоимость корзины: {basketSummary?.Total}
+        Общая стоимость корзины: {Total}
         {currency}
       </div>
-      <div>Персональная скидка: {basketSummary?.Discount}</div>
+      <div>Персональная скидка: {Discount}</div>
       <button type='submit'>Оформить заказ</button>
     </section>
   );

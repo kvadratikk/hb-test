@@ -1,22 +1,24 @@
-import useShoppingCartStore, {
-  Product,
-  ShoppingCartStore,
-} from '../../../entities/ShoppingCart/ShoppingCart';
+import useShoppingCartStore from '../../../entities/ShoppingCart/ShoppingCart';
+import { Product } from '../../../shared/types/Product';
 
 const CartProduct = ({ product }: { product: Product }) => {
   const { Name, Id, Сurrency, Price, Quantity, Images } = product;
 
-  const setQuantityInc = useShoppingCartStore((state: ShoppingCartStore) => state.setQuantityInc);
-  const setQuantityDec = useShoppingCartStore((state: ShoppingCartStore) => state.setQuantityDec);
-  const deleteProduct = useShoppingCartStore((state: ShoppingCartStore) => state.deleteProduct);
+  const setQuantityInc = useShoppingCartStore(({ setQuantityInc }) => setQuantityInc);
+  const setQuantityDec = useShoppingCartStore(({ setQuantityDec }) => setQuantityDec);
+  const deleteProduct = useShoppingCartStore(({ deleteProduct }) => deleteProduct);
+
+  const handleIncrease = () => setQuantityInc(Id);
+  const handleDecrease = () => setQuantityDec(Id);
+  const handleDelete = () => deleteProduct(Id);
 
   return (
     <tr key={Id}>
       <td>
         {Quantity}
-        <button onClick={() => setQuantityInc(Id)}>+</button>
-        <button onClick={() => setQuantityDec(Id)}>-</button>
-        <button onClick={() => deleteProduct(Id)}>Удалить</button>
+        <button onClick={handleIncrease}>+</button>
+        <button onClick={handleDecrease}>-</button>
+        <button onClick={handleDelete}>Удалить</button>
       </td>
       <td>
         <h3>{Name}</h3>
@@ -26,7 +28,7 @@ const CartProduct = ({ product }: { product: Product }) => {
         {Сurrency}
       </td>
       <td>
-        <img src={`${Images[0].Image}.${Images[0].FileExtension}`} alt={Name} />
+        <img src={`data:image/${Images[0].FileExtension};base64,${Images[0].Image}`} alt={Name} />
       </td>
     </tr>
   );

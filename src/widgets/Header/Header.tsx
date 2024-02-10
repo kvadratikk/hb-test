@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import useShoppingCartStore, { ShoppingCartStore } from '../../entities/ShoppingCart/ShoppingCart';
+import useShoppingCartStore from '../../entities/ShoppingCart/ShoppingCart';
 import Nav from './Nav/Nav';
 
 const Header = () => {
-  const header = useShoppingCartStore((state: ShoppingCartStore) => state.header);
-  const getHeader = useShoppingCartStore((state: ShoppingCartStore) => state.getHeader);
+  const header = useShoppingCartStore(({ header }) => header);
+  const getHeader = useShoppingCartStore(({ getHeader }) => getHeader);
+
+  console.log('render');
 
   useEffect(() => {
     if (!header) getHeader();
