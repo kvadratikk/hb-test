@@ -1,6 +1,9 @@
 import { RouteProps } from 'react-router-dom';
+import AboutPage from '../../pages/AboutPage/AboutPage';
+import ContactPage from '../../pages/ContactPage/ContactPage';
 import MainPage from '../../pages/MainPage/MainPage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
+import ProfilePage from '../../pages/ProfilePage/ProfilePage';
 import ShoppingCartPage from '../../pages/ShoppingCartPage/ShoppingCartPage';
 
 export enum AppRoutes {
@@ -29,17 +32,17 @@ export const navConfig: AppConfig[] = [
   },
   {
     path: AppRoutes.ABOUT,
-    element: <MainPage />,
+    element: <AboutPage />,
     name: 'О нас',
   },
   {
     path: AppRoutes.PROFILE,
-    element: <MainPage />,
+    element: <ProfilePage />,
     name: 'Личный кабинет',
   },
   {
     path: AppRoutes.CONTACT,
-    element: <MainPage />,
+    element: <ContactPage />,
     name: 'Контакты',
   },
 ];
