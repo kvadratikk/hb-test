@@ -1,8 +1,10 @@
 import Button from '@mui/material/Button';
+import Table from '@mui/material/Table';
 import { useEffect } from 'react';
 import useShoppingCartStore from '../../entities/ShoppingCart/ShoppingCart';
 import CartProduct from './Product/Product';
 
+import { TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import styles from './ShoppingCartPage.module.scss';
 
 const ShoppingCartPage = () => {
@@ -26,11 +28,21 @@ const ShoppingCartPage = () => {
         Очистить корзину
       </Button>
 
-      <div className={styles.products}>
-        {products?.map((product) => (
-          <CartProduct product={product} key={product.Id} />
-        ))}
-      </div>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Количество</TableCell>
+            <TableCell>Название</TableCell>
+            <TableCell>Цена одного товара</TableCell>
+            <TableCell>Фото</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {products?.map((product) => (
+            <CartProduct product={product} key={product.Id} />
+          ))}
+        </TableBody>
+      </Table>
 
       <div>
         <div>Количество товаров: {TotalProducts}</div>
